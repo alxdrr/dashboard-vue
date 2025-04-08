@@ -1,6 +1,13 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router/index.js";
-import "./index.css"; // pastikan Tailwind sudah setup
+import "./index.css";
+import VueApexCharts from "vue3-apexcharts";
 
-createApp(App).use(router).mount("#app");
+const app = createApp(App);
+
+app.use(router);
+app.use(VueApexCharts);
+app.component("apexchart", VueApexCharts);
+
+app.mount("#app");

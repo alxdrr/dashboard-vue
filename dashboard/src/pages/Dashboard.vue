@@ -39,12 +39,16 @@
           <CirclePlus color="gray" size="20" /><CircleMinus color="gray" size="20" /><ZoomIn color="gray" size="20" /><House size="20" /><EllipsisVertical size="20" />
         </div>
       </template>
+
+      <SplineArea />
     </Card>
 
     <Card title="Current Statistic">
       <template #icon>
         <div class="text-xs flex gap-2 justify-center items-center"><EllipsisVertical size="20" /></div>
       </template>
+
+      <RadialStat />
     </Card>
 
     <Card title="My Tasks" class="col-span-2">
@@ -62,5 +66,7 @@
 </template>
 <script setup>
 import Card from "../components/Card.vue";
+import RadialStat from "../components/charts/RadialStat.vue";
+import SplineArea from "../components/charts/SplineArea.vue";
 import { TrendingUp, House, Users, CirclePlus, CircleMinus, ZoomIn, EllipsisVertical } from "lucide-vue-next";
 </script>

@@ -54,35 +54,186 @@
               </span>
             </td>
             <td class="px-4 py-1 text-xs">
-              <div class="flex items-center gap-2 border-2 justify-center py-1 rounded-full"><ShoppingCart class="w-4 h-4" /> 0 Payment</div>
+              <div class="flex items-center gap-2 border-1 justify-center py-1 rounded-full"><ShoppingCart class="w-4 h-4" /> 0 Payment</div>
             </td>
             <td class="px-4 py-1 text-xs">
-              <div class="flex items-center gap-2 border-2 justify-center py-1 rounded-full"><ShoppingCart class="w-4 h-4" /> 0 Order</div>
+              <div class="flex items-center gap-2 border-1 justify-center py-1 rounded-full"><ShoppingCart class="w-4 h-4" /> 0 Order</div>
             </td>
             <td class="px-4 py-1 text-xs">
-              <div class="relative flex items-center gap-2 border-2 justify-center py-1 rounded-full">
+              <div @click="openChat(item)" class="relative flex items-center gap-2 border-1 justify-center py-1 rounded-full cursor-pointer">
                 <MessageCircle class="w-4 h-4" />
                 Chat with us
-                <span v-if="item.messages > 0" class="absolute z-10 -top-2 -right-2 ml-2 text-xs text-white bg-green-400 rounded-full w-5 h-5 flex items-center justify-center">{{
-                  item.messages
-                }}</span>
+                <span v-if="item.messages > 0" class="absolute z-10 -top-2 -right-2 ml-2 text-xs text-white bg-green-400 rounded-full w-5 h-5 flex items-center justify-center">
+                  {{ item.messages }}
+                </span>
               </div>
             </td>
             <td class="px-4 py-1">
-              <button @click="openDetail(reservation)"><EllipsisVertical class="w-4 h-4 cursor-pointer" /></button>
+              <button @click="openDetail(item)">
+                <EllipsisVertical class="w-4 h-4 cursor-pointer" />
+              </button>
             </td>
           </tr>
         </tbody>
       </table>
-      <Offcanvas :show="showDetail" @close="showDetail = false">
-        <!-- Konten detail reservasi di sini -->
-        <h2 class="text-lg font-semibold mb-4">Detail Reservation</h2>
-        <div class="text-sm space-y-2">
-          <p><strong>Name:</strong> {{ selectedReservation?.guestName }}</p>
-          <p><strong>Email:</strong> {{ selectedReservation?.email }}</p>
-          <!-- dan seterusnya sesuai data -->
+      <Offcanvas :show="showChat" @close="showChat = false">
+        <div class="h-full p-4 space-y-4 flex flex-col">
+          <div class="relative">
+            <button @click="showChat = false" class="absolute -left-6 text-gray-500 hover:text-black text-xl">&times;</button>
+            <div>
+              <h2 class="text-lg font-semibold">Chat with Us</h2>
+            </div>
+          </div>
+
+          <div class="rounded-lg p-4 space-y-2 bg-gr ay-50">
+            <h3 class="text-md font-semibold">
+              {{ selectedChat?.name }} <span class="text-gray-400">+{{ selectedChat?.guestCount - 1 }} Guests</span>
+            </h3>
+            <p class="text-sm flex items-center gap-1">
+              <Calendar size="14" />
+              {{ selectedChat?.checkIn }} - {{ selectedChat?.checkOut }}
+            </p>
+            <p class="text-sm flex items-center gap-1">
+              <MapPin size="14" />
+              {{ selectedChat?.roomInfo }}
+            </p>
+          </div>
+
+          <!-- Chat messages -->
+          <div class="space-y-3 flex flex-col h-full">
+            <div class="bg-yellow-300 text-sm text-black max-w-2/3 p-3 rounded-lg rounded-tr-none self-end">
+              Good afternoon Juliantara!, Front office here, is there anything we can do to help you?
+            </div>
+            <div class="bg-gray-200 text-sm text-black max-w-2/3 p-3 rounded-lg rounded-tl-none w-fit">Yes, where’s the key?</div>
+            <div class="bg-yellow-300 text-sm text-black max-w-2/3 p-3 rounded-lg rounded-tr-none w-fit self-end">
+              Good afternoon! If you're looking for the property key, please head over to the front desk, and we'll be happy to assist you.
+            </div>
+          </div>
+
+          <!-- Input -->
+          <div class="pt-4 flex flex-col gap-2">
+            <input type="text" placeholder="Type a message..." class="flex-1 bg-gray-200 rounded-sm px-3 py-2 text-sm" />
+            <div class="flex justify-between">
+              <button class="flex justify-center items-center gap-2 py-2 text-gray-600 rounded-sm w-max">
+                <Sparkles color="gray" size="14" />
+                <p>Generate</p>
+              </button>
+              <button class="px-12 py-2 bg-gray-200 text-gray-600 rounded-lg">Send</button>
+            </div>
+          </div>
         </div>
       </Offcanvas>
+
+      <Offcanvas :show="showDetail" @close="showDetail = false">
+        <div class="p-4 space-y-6">
+          <!-- Header -->
+          <div class="relative">
+            <button @click="showDetail = false" class="absolute -left-6 text-gray-500 hover:text-black text-xl">&times;</button>
+            <div>
+              <h2 class="text-lg font-semibold">Detail Reservation</h2>
+            </div>
+          </div>
+
+          <!-- Nama dan waktu -->
+          <div class="space-y-1">
+            <h3 class="text-xl font-semibold">
+              {{ selectedReservation?.name }}
+              <span class="text-gray-400 text-xs font-normal">+{{ selectedReservation?.guestCount - 1 }} Guests</span>
+            </h3>
+
+            <p class="text-sm flex items-center gap-1">
+              <Calendar size="14" />
+              {{ selectedReservation?.checkIn }} - {{ selectedReservation?.checkOut }}
+            </p>
+            <p class="text-sm flex items-center gap-1">
+              <MapPin size="14" />
+              {{ selectedReservation?.roomInfo }}
+            </p>
+            <hr class="border-neutral-200 mt-2" />
+          </div>
+          <!-- Status dan tombol ubah -->
+          <div class="bg-gray-100 rounded-lg p-4 space-y-4">
+            <div class="grid grid-cols-2 gap-y-2 text-sm relative">
+              <p class="font-medium">Status</p>
+              <span
+                :class="[
+                  'text-xs px-2 py-1 rounded-sm font-medium text-white w-max',
+                  selectedReservation?.status === 'Verified' ? 'bg-green-400' : selectedReservation?.status === 'Check in' ? 'bg-orange-400' : 'bg-red-400',
+                ]"
+              >
+                {{ selectedReservation?.status }}
+              </span>
+              <a href="" class="underline absolute right-2 text-xs">Change status</a>
+              <hr class="col-span-2 border-neutral-300" />
+
+              <p class="font-medium">Reservation ID</p>
+              <p>{{ selectedReservation?.reservationId }}</p>
+
+              <hr class="col-span-2 border-neutral-300" />
+
+              <p class="font-medium">Email</p>
+              <p>{{ selectedReservation?.email }}</p>
+
+              <hr class="col-span-2 border-neutral-300" />
+
+              <p class="font-medium">Verify Type</p>
+              <p>{{ selectedReservation?.verifyType }}</p>
+
+              <hr class="col-span-2 border-neutral-300" />
+
+              <p class="font-medium">Age Group</p>
+              <p>{{ selectedReservation?.ageGroup }}</p>
+
+              <hr class="col-span-2 border-neutral-300" />
+
+              <p class="font-medium">Country of Origin</p>
+              <p>{{ selectedReservation?.originCountry }}</p>
+
+              <hr class="col-span-2 border-neutral-300" />
+
+              <p class="font-medium">Nationality</p>
+              <p>{{ selectedReservation?.nationality }}</p>
+
+              <hr class="col-span-2 border-neutral-300" />
+
+              <p class="font-medium">Birth Date</p>
+              <p>{{ selectedReservation?.birthDate }}</p>
+
+              <hr class="col-span-2 border-neutral-300" />
+
+              <p class="font-medium">Reason for Travel</p>
+              <p>{{ selectedReservation?.travelReason }}</p>
+
+              <hr class="col-span-2 border-neutral-300" />
+
+              <p class="font-medium">Type of ID</p>
+              <p>{{ selectedReservation?.idType }}</p>
+
+              <hr class="col-span-2 border-neutral-300" />
+
+              <p class="font-medium">ID Number</p>
+              <p>{{ selectedReservation?.idNumber }}</p>
+
+              <hr class="col-span-2 border-neutral-300" />
+
+              <p class="font-medium">Mode of Transport</p>
+              <p>{{ selectedReservation?.transportMode }}</p>
+
+              <hr class="col-span-2 border-neutral-300" />
+
+              <p class="font-medium">Estimated Check-in</p>
+              <p>{{ selectedReservation?.estimatedCheckIn }}</p>
+            </div>
+          </div>
+
+          <!-- Guest Guide -->
+          <div class="pt-4 flex gap-4">
+            <button class="w-full bg-yellow-400 hover:bg-yellow-500 py-2 rounded-sm font-semibold">View Guest Guide</button>
+            <button class="hover:bg-neutral-200 p-2 border-2 border-yellow-500 rounded-sm font-semibold"><Copy /></button>
+          </div>
+        </div>
+      </Offcanvas>
+
       <div class="flex items-center justify-between text-sm text-gray-500 px-4 py-3">
         <span>Showing 10 of 110 Results</span>
         <div class="flex items-center gap-2">
@@ -103,7 +254,7 @@
 
 <script setup>
 import { ref } from "vue";
-import { Search, MessageCircle, ShoppingCart, ChevronLeft, ChevronRight, EllipsisVertical } from "lucide-vue-next";
+import { Search, MessageCircle, ShoppingCart, ChevronLeft, ChevronRight, EllipsisVertical, Calendar, MapPin, Copy, Sparkles } from "lucide-vue-next";
 import Button from "../components/ui/Button.vue";
 import Card from "../components/Card.vue";
 import Offcanvas from "@/components/ui/Offcanvas.vue";
@@ -116,86 +267,132 @@ function openDetail(reservation) {
   showDetail.value = true;
 }
 
+const showChat = ref(false);
+const selectedChat = ref(null);
+
+function openChat(guest) {
+  selectedChat.value = guest;
+  showChat.value = true;
+}
 const tabs = ["Ongoing", "Previous", "Cancelled"];
 const activeTab = ref("Ongoing");
 
 const reservations = ref([
   {
     name: "Oliver Bennett",
+    guestCount: 2,
     location: "The Maple Grove Residences",
     date: "19 May - 02:00PM - 26 May - 01:30PM",
+    checkIn: "19 May - 02:00 PM",
+    checkOut: "26 May - 01:30 PM",
+    roomInfo: "The Maple Grove Residences - Executive Suite",
     status: "Verified",
+    reservationId: "resv-001",
+    email: "oliver.bennett@example.com",
+    verifyType: "Individual",
+    ageGroup: "Adult",
+    originCountry: "United Kingdom",
+    nationality: "British",
+    birthDate: "10 Jun 1985",
+    travelReason: "Business",
+    idType: "Passport",
+    idNumber: "A123456789",
+    transportMode: "Plane",
+    estimatedCheckIn: "19 May 2025, 02:00 PM",
     messages: 2,
   },
   {
     name: "Ethan Clark",
+    guestCount: 3,
     location: "The Maple Grove Residences",
     date: "19 May - 02:00PM - 26 May - 01:30PM",
+    checkIn: "19 May - 02:00 PM",
+    checkOut: "26 May - 01:30 PM",
+    roomInfo: "The Maple Grove Residences - Deluxe Room",
     status: "Verified",
+    reservationId: "resv-002",
+    email: "ethan.clark@example.com",
+    verifyType: "Group",
+    ageGroup: "Adult",
+    originCountry: "USA",
+    nationality: "American",
+    birthDate: "22 Nov 1990",
+    travelReason: "Leisure",
+    idType: "Driver License",
+    idNumber: "DL9847352",
+    transportMode: "Car",
+    estimatedCheckIn: "19 May 2025, 02:00 PM",
     messages: 2,
   },
   {
     name: "James Wilson",
+    guestCount: 1,
     location: "The Maple Grove Residences",
     date: "19 May - 02:00PM - 26 May - 01:30PM",
+    checkIn: "19 May - 02:00 PM",
+    checkOut: "26 May - 01:30 PM",
+    roomInfo: "The Maple Grove Residences - Studio",
     status: "Verified",
+    reservationId: "resv-003",
+    email: "james.wilson@example.com",
+    verifyType: "Individual",
+    ageGroup: "Adult",
+    originCountry: "Australia",
+    nationality: "Australian",
+    birthDate: "08 Mar 1988",
+    travelReason: "Business",
+    idType: "Passport",
+    idNumber: "AU82947382",
+    transportMode: "Plane",
+    estimatedCheckIn: "19 May 2025, 02:00 PM",
     messages: 2,
   },
   {
     name: "Lily Martinez",
+    guestCount: 2,
     location: "The Maple Grove Residences",
     date: "19 May - 02:00PM - 26 May - 01:30PM",
+    checkIn: "19 May - 02:00 PM",
+    checkOut: "26 May - 01:30 PM",
+    roomInfo: "The Maple Grove Residences - Cozy Room",
     status: "Verified",
+    reservationId: "resv-004",
+    email: "lily.martinez@example.com",
+    verifyType: "Individual",
+    ageGroup: "Adult",
+    originCountry: "Spain",
+    nationality: "Spanish",
+    birthDate: "18 Dec 1992",
+    travelReason: "Leisure",
+    idType: "National ID",
+    idNumber: "ES93847282",
+    transportMode: "Train",
+    estimatedCheckIn: "19 May 2025, 02:00 PM",
     messages: 2,
   },
   {
     name: "Sofia Bennett",
+    guestCount: 4,
     location: "The Oakwood Suites",
     date: "19 May - 02:00PM - 26 May - 01:30PM",
+    checkIn: "19 May - 02:00 PM",
+    checkOut: "26 May - 01:30 PM",
+    roomInfo: "The Oakwood Suites - Family Suite",
     status: "Check in",
+    reservationId: "resv-005",
+    email: "sofia.bennett@example.com",
+    verifyType: "Group",
+    ageGroup: "Adult",
+    originCountry: "Indonesia",
+    nationality: "Indonesian",
+    birthDate: "14 Mar 1999",
+    travelReason: "Business",
+    idType: "Passport",
+    idNumber: "273293938882",
+    transportMode: "Plane",
+    estimatedCheckIn: "22 Mar 2025, 08:00 AM",
     messages: 10,
   },
-  {
-    name: "Masson Torres",
-    location: "The Oakwood Suites",
-    date: "19 May - 02:00PM - 26 May - 01:30PM",
-    status: "Check in",
-    messages: 10,
-  },
-  {
-    name: "Noah Smith",
-    location: "The Oakwood Suites",
-    date: "19 May - 02:00PM - 26 May - 01:30PM",
-    status: "Check in",
-    messages: 10,
-  },
-  {
-    name: "Lucas White",
-    location: "The Oakwood Suites",
-    date: "19 May - 02:00PM - 26 May - 01:30PM",
-    status: "Check in",
-    messages: 10,
-  },
-  {
-    name: "Sophie Lang",
-    location: "The Oakwood Suites",
-    date: "19 May - 02:00PM - 26 May - 01:30PM",
-    status: "Verify",
-    messages: 0,
-  },
-  {
-    name: "Chloe Adams",
-    location: "The Oakwood Suites",
-    date: "19 May - 02:00PM - 26 May - 01:30PM",
-    status: "Verify",
-    messages: 0,
-  },
-  {
-    name: "Isabella Grant",
-    location: "The Oakwood Suites",
-    date: "19 May - 02:00PM - 26 May - 01:30PM",
-    status: "Verify",
-    messages: 0,
-  },
+  // Tambahkan data serupa untuk Masson Torres, Noah Smith, Lucas White, dll...
 ]);
 </script>

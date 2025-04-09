@@ -1,5 +1,31 @@
-# Vue 3 + Vite
+# Elev8 Villas Technical Test – Vue 3 Implementation
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+This project is a technical test for the Front-End Developer position at Elev8 Villas. The task involves converting Figma designs into functional Vue 3 pages using the Composition API.
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+## 🔧 Tech Stack
+
+- [Vue 3](https://vuejs.org/) (Composition API)
+- [Vite](https://vitejs.dev/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Vue Router](https://router.vuejs.org/) – for routing
+
+## 📄 Pages Implemented
+
+1. **Dashboard Page**
+
+   - Displays guest analytics and quick stats.
+   - Implemented reusable card components.
+   - Responsive design layout.
+
+2. **Reservations Page**
+   - List of guest reservations with status indicators.
+   - Off-canvas chat support feature (based on design).
+   - Message thread simulation.
+
+## 🚀 How to Run Locally
+
+1. Clone the repository
+
+```bash
+git clone https://github.com/yourusername/elev8-vue-test.git
+```
